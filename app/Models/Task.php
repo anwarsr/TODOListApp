@@ -11,12 +11,12 @@ class Task extends Model
 
     protected $fillable = [
         'user_id',
-        'category_id',
         'title',
         'description',
         'deadline',
         'status',
         'priority'
+        // category_id dihapus
     ];
 
     protected $casts = [
@@ -28,24 +28,5 @@ class Task extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function category()
-    {
-        return $this->belongsTo(Category::class);
-    }
-
-    public function scopePending($query)
-    {
-        return $query->where('status', 'pending');
-    }
-
-    public function scopeCompleted($query)
-    {
-        return $query->where('status', 'completed');
-    }
-
-    public function scopeSearch($query, $search)
-    {
-        return $query->where('title', 'like', "%{$search}%")
-                    ->orWhere('description', 'like', "%{$search}%");
-    }
+    // Hapus method category()
 }

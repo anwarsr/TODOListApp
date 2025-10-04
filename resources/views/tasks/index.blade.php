@@ -10,41 +10,47 @@
 
     <!-- Search and Filters -->
     <div class="bg-white rounded-lg shadow p-6 mb-6">
-        <div class="flex flex-col md:flex-row gap-4">
-            <!-- Search -->
-            <div class="flex-1">
-                <form method="GET" class="flex gap-2">
-                    <input type="text" name="search" value="{{ request('search') }}" 
-                           placeholder="Search tasks..." 
-                           class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
-                        <i class="fas fa-search"></i>
-                    </button>
-                </form>
+        <form method="GET" action="{{ route('tasks.index') }}">
+            <div class="flex flex-col md:flex-row gap-4">
+                <!-- Search -->
+                <div class="flex-1">
+                    <div class="flex gap-2">
+                        <input type="text" name="search" value="{{ request('search') }}" 
+                               placeholder="Search tasks..." 
+                               class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Filters -->
+                <div class="flex gap-2">
+                    <!-- Status Filter -->
+                    <select name="status" onchange="this.form.submit()" class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="">All Tasks</option>
+                        <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
+                        <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>Completed</option>
+                    </select>
+
+                    <!-- Date Filter (REPLACED Category Filter) -->
+                    <select name="date_filter" onchange="this.form.submit()" class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="">All Dates</option>
+                        <option value="today" {{ request('date_filter') == 'today' ? 'selected' : '' }}>Today</option>
+                        <option value="tomorrow" {{ request('date_filter') == 'tomorrow' ? 'selected' : '' }}>Tomorrow</option>
+                        <option value="this_week" {{ request('date_filter') == 'this_week' ? 'selected' : '' }}>This Week</option>
+                        <option value="next_week" {{ request('date_filter') == 'next_week' ? 'selected' : '' }}>Next Week</option>
+                        <option value="this_month" {{ request('date_filter') == 'this_month' ? 'selected' : '' }}>This Month</option>
+                        <option value="overdue" {{ request('date_filter') == 'overdue' ? 'selected' : '' }}>Overdue</option>
+                        <option value="no_date" {{ request('date_filter') == 'no_date' ? 'selected' : '' }}>No Date</option>
+                    </select>
+
+                    <a href="{{ route('tasks.create') }}" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center gap-2">
+                        <i class="fas fa-plus"></i> New Task
+                    </a>
+                </div>
             </div>
-
-            <!-- Filters -->
-            <div class="flex gap-2">
-                <select name="status" onchange="this.form.submit()" class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <option value="">All Tasks</option>
-                    <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
-                    <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>Completed</option>
-                </select>
-
-                <select name="category_id" onchange="this.form.submit()" class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <option value="">All Categories</option>
-                    @foreach($categories as $category)
-                    <option value="{{ $category->id }}" {{ request('category_id') == $category->id ? 'selected' : '' }}>
-                        {{ $category->name }}
-                    </option>
-                    @endforeach
-                </select>
-
-                <a href="{{ route('tasks.create') }}" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center gap-2">
-                    <i class="fas fa-plus"></i> New Task
-                </a>
-            </div>
-        </div>
+        </form>
     </div>
 
     <!-- Tasks List -->
@@ -57,11 +63,11 @@
             <div class="flex items-center justify-between">
                 <div class="flex items-center space-x-4 flex-1">
                     <!-- Checkbox -->
-                    <form method="POST" action="{{ route('tasks.toggle-status', $task) }}">
+                    <form method="POST" action="{{ route('tasks.toggle-status', $task) }}" class="m-0">
                         @csrf
                         @method('PATCH')
                         <button type="submit" class="w-6 h-6 border-2 rounded-full flex items-center justify-center 
-                            {{ $task->status == 'completed' ? 'bg-green-500 border-green-500 text-white' : 'border-gray-300' }}">
+                            {{ $task->status == 'completed' ? 'bg-green-500 border-green-500 text-white' : 'border-gray-300' }} hover:border-green-500 transition-colors">
                             @if($task->status == 'completed')
                             <i class="fas fa-check text-xs"></i>
                             @endif
@@ -73,41 +79,71 @@
                         <h3 class="text-lg font-semibold {{ $task->status == 'completed' ? 'line-through text-gray-500' : 'text-gray-900' }}">
                             {{ $task->title }}
                         </h3>
+                        
                         @if($task->description)
-                        <p class="text-gray-600 mt-1">{{ $task->description }}</p>
+                        <p class="text-gray-600 mt-1 {{ $task->status == 'completed' ? 'line-through' : '' }}">
+                            {{ $task->description }}
+                        </p>
                         @endif
                         
                         <div class="flex items-center gap-4 mt-2 text-sm text-gray-500">
+                            <!-- Deadline with better styling -->
                             @if($task->deadline)
-                            <span class="flex items-center gap-1">
-                                <i class="fas fa-calendar"></i>
-                                {{ $task->deadline->format('M d, Y') }}
-                            </span>
-                            @endif
-                            
-                            @if($task->category)
-                            <span class="flex items-center gap-1">
-                                <i class="fas fa-tag" style="color: {{ $task->category->color }}"></i>
-                                {{ $task->category->name }}
-                            </span>
+                                @php
+                                    $deadline = \Carbon\Carbon::parse($task->deadline);
+                                    $today = \Carbon\Carbon::today();
+                                    $isOverdue = $deadline->lt($today) && $task->status == 'pending';
+                                @endphp
+                                <span class="flex items-center gap-1 {{ $isOverdue ? 'text-red-600 font-semibold' : '' }}">
+                                    <i class="fas fa-calendar {{ $isOverdue ? 'text-red-500' : '' }}"></i>
+                                    {{ $deadline->format('M d, Y') }}
+                                    @if($isOverdue)
+                                        <span class="bg-red-100 text-red-800 px-2 py-1 rounded-full text-xs ml-2">
+                                            Overdue
+                                        </span>
+                                    @endif
+                                </span>
+                            @else
+                                <span class="flex items-center gap-1 text-gray-400">
+                                    <i class="fas fa-calendar-times"></i>
+                                    No deadline
+                                </span>
                             @endif
 
-                            <span class="capitalize {{ $task->priority == 'high' ? 'text-red-500' : ($task->priority == 'medium' ? 'text-yellow-500' : 'text-green-500') }}">
+                            <!-- Priority -->
+                            <span class="capitalize px-2 py-1 rounded-full text-xs 
+                                @if($task->priority == 'high') bg-red-100 text-red-800
+                                @elseif($task->priority == 'medium') bg-yellow-100 text-yellow-800
+                                @else bg-green-100 text-green-800 @endif">
                                 {{ $task->priority }} priority
+                            </span>
+
+                            <!-- Status -->
+                            <span class="text-xs {{ $task->status == 'completed' ? 'text-green-600' : 'text-blue-600' }}">
+                                {{ $task->status == 'completed' ? 'Completed' : 'Pending' }}
                             </span>
                         </div>
                     </div>
                 </div>
 
                 <!-- Actions -->
-                <div class="flex items-center space-x-2">
-                    <a href="{{ route('tasks.edit', $task) }}" class="text-blue-600 hover:text-blue-800">
+                <div class="flex items-center space-x-3">
+                    <!-- Edit Button -->
+                    <a href="{{ route('tasks.edit', $task) }}" 
+                       class="text-blue-600 hover:text-blue-800 transition-colors"
+                       title="Edit Task">
                         <i class="fas fa-edit"></i>
                     </a>
-                    <form method="POST" action="{{ route('tasks.destroy', $task) }}" onsubmit="return confirm('Are you sure?')">
+                    
+                    <!-- Delete Button -->
+                    <form method="POST" action="{{ route('tasks.destroy', $task) }}" 
+                          class="m-0" 
+                          onsubmit="return confirm('Are you sure you want to delete this task?')">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="text-red-600 hover:text-red-800">
+                        <button type="submit" 
+                                class="text-red-600 hover:text-red-800 transition-colors"
+                                title="Delete Task">
                             <i class="fas fa-trash"></i>
                         </button>
                     </form>
@@ -118,12 +154,41 @@
         <div class="bg-white rounded-lg shadow p-8 text-center">
             <i class="fas fa-clipboard-list text-4xl text-gray-400 mb-4"></i>
             <h3 class="text-xl font-semibold text-gray-600">No tasks found</h3>
-            <p class="text-gray-500 mt-2">Get started by creating your first task!</p>
-            <a href="{{ route('tasks.create') }}" class="inline-block mt-4 bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
+            <p class="text-gray-500 mt-2">
+                @if(request()->has('date_filter') && request('date_filter'))
+                    No tasks found for the selected date filter.
+                @else
+                    Get started by creating your first task!
+                @endif
+            </p>
+            <a href="{{ route('tasks.create') }}" class="inline-block mt-4 bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
                 Create Task
             </a>
         </div>
         @endforelse
     </div>
+
+    <!-- Success Message -->
+    @if(session('success'))
+    <div class="fixed bottom-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg transition-opacity duration-300">
+        <div class="flex items-center gap-2">
+            <i class="fas fa-check-circle"></i>
+            <span>{{ session('success') }}</span>
+        </div>
+    </div>
+    @endif
 </div>
+
+<script>
+    // Auto-hide success message after 3 seconds
+    document.addEventListener('DOMContentLoaded', function() {
+        const successMessage = document.querySelector('.fixed.bottom-4');
+        if (successMessage) {
+            setTimeout(() => {
+                successMessage.style.opacity = '0';
+                setTimeout(() => successMessage.remove(), 300);
+            }, 3000);
+        }
+    });
+</script>
 @endsection

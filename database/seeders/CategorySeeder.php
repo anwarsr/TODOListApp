@@ -1,5 +1,4 @@
 <?php
-// database/seeders/CategorySeeder.php
 
 namespace Database\Seeders;
 
@@ -16,6 +15,7 @@ class CategorySeeder extends Seeder
             ['name' => 'Shopping', 'color' => '#ffc107'],
             ['name' => 'Health', 'color' => '#dc3545'],
             ['name' => 'Education', 'color' => '#6f42c1'],
+            ['name' => 'Urgent', 'color' => '#fd7e14'],
         ];
 
         foreach ($categories as $category) {
