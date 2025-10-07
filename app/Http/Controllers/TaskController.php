@@ -31,12 +31,27 @@ class TaskController extends Controller
             });
         }
 
-        // Urutkan berdasarkan deadline
-        $tasks = $query->orderBy('deadline', 'asc')
-                      ->orderBy('created_at', 'desc')
-                      ->get();
+        // Sorting
+        $sortBy = $request->input('sort_by', 'deadline'); // default sort by deadline
+        $sortDirection = $request->input('sort_direction', 'asc'); // default sort direction asc
+
+        if ($sortBy === 'priority') {
+            // Custom order for priority: high -> medium -> low
+            $query->orderByRaw("
+                CASE 
+                    WHEN priority = 'high' THEN 1 
+                    WHEN priority = 'medium' THEN 2 
+                    WHEN priority = 'low' THEN 3 
+                END {$sortDirection}
+            ");
+        } else {
+            // Default to sorting by deadline or any other column
+            $query->orderBy('deadline', $sortDirection);
+        }
+
+        $tasks = $query->orderBy('created_at', 'desc')->get();
         
-        return view('tasks.index', compact('tasks'));
+        return view('tasks.index', compact('tasks', 'sortBy', 'sortDirection'));
     }
 
     /**
