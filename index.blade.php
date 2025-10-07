@@ -183,7 +183,7 @@
 
     <!-- Success Message -->
     @if(session('success'))
-    <div class="success-message fixed bottom-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg transition-opacity duration-300">
+    <div id="success-message" class="fixed bottom-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg transition-opacity duration-300">
         <div class="flex items-center gap-2">
             <i class="fas fa-check-circle"></i>
             <span>{{ session('success') }}</span>
@@ -195,17 +195,13 @@
 <script>
     // Auto-hide success message after 3 seconds
     document.addEventListener('DOMContentLoaded', function() {
-        const successMessages = document.querySelectorAll('.success-message');
-        successMessages.forEach(function(message) {
-            // Only set a new timeout if one isn't already running
-            if (!message.dataset.hiding) {
-                message.dataset.hiding = 'true';
-                setTimeout(() => {
-                    message.style.opacity = '0';
-                    setTimeout(() => message.remove(), 300);
-                }, 3000);
-            }
-        });
+        const successMessage = document.getElementById('success-message');
+        if (successMessage) {
+            setTimeout(() => {
+                successMessage.style.opacity = '0';
+                setTimeout(() => successMessage.remove(), 300);
+            }, 3000);
+        }
     });
 </script>
 @endsection
