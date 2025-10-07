@@ -25,7 +25,7 @@
                 </div>
 
                 <!-- Filters -->
-                <div class="flex gap-2">
+                <div class="flex flex-wrap gap-2">
                     <!-- Status Filter -->
                     <select name="status" onchange="this.form.submit()" class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
                         <option value="">All Tasks</option>
@@ -44,6 +44,19 @@
                         <option value="overdue" {{ request('date_filter') == 'overdue' ? 'selected' : '' }}>Overdue</option>
                         <option value="no_date" {{ request('date_filter') == 'no_date' ? 'selected' : '' }}>No Date</option>
                     </select>
+
+                    <!-- Sort By Filter -->
+                    <select name="sort_by" onchange="this.form.submit()" class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="deadline" {{ $sortBy == 'deadline' ? 'selected' : '' }}>Sort by Deadline</option>
+                        <option value="priority" {{ $sortBy == 'priority' ? 'selected' : '' }}>Sort by Priority</option>
+                    </select>
+
+                    <!-- Sort Direction Filter -->
+                    <select name="sort_direction" onchange="this.form.submit()" class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="asc" {{ $sortDirection == 'asc' ? 'selected' : '' }}>Ascending</option>
+                        <option value="desc" {{ $sortDirection == 'desc' ? 'selected' : '' }}>Descending</option>
+                    </select>
+
 
                     <a href="{{ route('tasks.create') }}" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center gap-2">
                         <i class="fas fa-plus"></i> New Task
