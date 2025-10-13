@@ -8,6 +8,14 @@
         <p class="text-gray-600 text-lg">Stay organized and get things done</p>
     </div>
 
+    <!-- Edit Profile Link (prominent) -->
+    <div class="flex justify-end mb-6">
+        <a href="{{ route('profile.edit') }}" class="btn-gradient text-white px-6 py-3.5 rounded-xl font-medium flex items-center gap-2 transition-all duration-300 hover:shadow-lg transform hover:scale-105">
+            <i class="fa-solid fa-user-gear"></i>
+            Edit Profile
+        </a>
+    </div>
+
     <!-- Search and Filters -->
     <div class="glass-card p-6 mb-8 animate-slide-in-left">
         <form method="GET" action="{{ route('tasks.index') }}">
@@ -219,6 +227,7 @@
     @endif
 </div>
 
+
 <script>
     document.addEventListener('DOMContentLoaded', function () {
 
@@ -269,13 +278,14 @@
         const inputs = document.querySelectorAll('input, select');
         inputs.forEach(input => {
             input.addEventListener('focus', function () {
-                this.parentElement.classList.add('ring-2', 'ring-indigo-200', 'rounded-xl');
+                if (this.parentElement) this.parentElement.classList.add('ring-2', 'ring-indigo-200', 'rounded-xl');
             });
 
             input.addEventListener('blur', function () {
-                this.parentElement.classList.remove('ring-2', 'ring-indigo-200', 'rounded-xl');
+                if (this.parentElement) this.parentElement.classList.remove('ring-2', 'ring-indigo-200', 'rounded-xl');
             });
         });
 
+        // (No modal handlers needed; profile editing moved to dedicated page)
 </script>
 @endsection

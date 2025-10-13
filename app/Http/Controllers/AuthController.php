@@ -62,4 +62,37 @@ class AuthController extends Controller
 
         return redirect('/login');
     }
+
+    /**
+     * Update authenticated user's email and/or password.
+     * Minimal validation per user request (no old password required).
+     */
+    public function updateProfile(Request $request)
+    {
+        $user = Auth::user();
+
+        $data = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $user->id,
+            'password' => 'nullable|min:6|confirmed'
+        ]);
+
+        $user->name = $data['name'];
+        $user->email = $data['email'];
+
+        if (!empty($data['password'])) {
+            $user->password = bcrypt($data['password']);
+        }
+        $user->save();
+
+        return redirect()->back()->with('success', 'Profile updated successfully.');
+    }
+
+    /**
+     * Show profile edit form.
+     */
+    public function editProfile()
+    {
+        return view('profile.edit');
+    }
 }
