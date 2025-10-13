@@ -1,65 +1,80 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="max-w-6xl mx-auto">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <!-- Header -->
-    <div class="mb-8">
-        <h1 class="text-3xl font-bold text-gray-900">My Tasks</h1>
-        <p class="text-gray-600">Stay organized and get things done</p>
+    <div class="mb-8 text-center animate-fade-in-up">
+        <h1 class="text-4xl font-bold text-gray-800 mb-3">My Tasks</h1>
+        <p class="text-gray-600 text-lg">Stay organized and get things done</p>
     </div>
 
     <!-- Search and Filters -->
-    <div class="bg-white rounded-lg shadow p-6 mb-6">
+    <div class="glass-card p-6 mb-8 animate-slide-in-left">
         <form method="GET" action="{{ route('tasks.index') }}">
-            <div class="flex flex-col md:flex-row gap-4">
+            <div class="flex flex-col lg:flex-row gap-6 items-start lg:items-center">
                 <!-- Search -->
-                <div class="flex-1">
-                    <div class="flex gap-2">
-                        <input type="text" name="search" value="{{ request('search') }}" 
-                               placeholder="Search tasks..." 
-                               class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
-                            <i class="fas fa-search"></i>
-                        </button>
+                <div class="flex-1 w-full">
+                    <div class="relative">
+                        <i class="fa-solid fa-magnifying-glass absolute left-4 top-3.5 text-gray-400"></i>
+                        <input type="text" name="search" value="{{ request('search') }}" placeholder="Search tasks..."
+                            class="w-full pl-12 pr-4 py-3.5 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 bg-white/60 backdrop-blur-sm transition-all duration-300 hover:shadow-md">
                     </div>
                 </div>
 
                 <!-- Filters -->
-                <div class="flex flex-wrap gap-2">
+                <div class="flex flex-wrap gap-3 w-full lg:w-auto">
                     <!-- Status Filter -->
-                    <select name="status" onchange="this.form.submit()" class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <select name="status" onchange="this.form.submit()"
+                        class="px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400 bg-white/60 backdrop-blur-sm transition-all duration-300 hover:shadow-md">
                         <option value="">All Tasks</option>
                         <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
-                        <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>Completed</option>
+                        <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>Completed
+                        </option>
                     </select>
 
-                    <!-- Date Filter (REPLACED Category Filter) -->
-                    <select name="date_filter" onchange="this.form.submit()" class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <!-- Date Filter -->
+                    <select name="date_filter" onchange="this.form.submit()"
+                        class="px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400 bg-white/60 backdrop-blur-sm transition-all duration-300 hover:shadow-md">
                         <option value="">All Dates</option>
                         <option value="today" {{ request('date_filter') == 'today' ? 'selected' : '' }}>Today</option>
-                        <option value="tomorrow" {{ request('date_filter') == 'tomorrow' ? 'selected' : '' }}>Tomorrow</option>
-                        <option value="this_week" {{ request('date_filter') == 'this_week' ? 'selected' : '' }}>This Week</option>
-                        <option value="next_week" {{ request('date_filter') == 'next_week' ? 'selected' : '' }}>Next Week</option>
-                        <option value="this_month" {{ request('date_filter') == 'this_month' ? 'selected' : '' }}>This Month</option>
-                        <option value="overdue" {{ request('date_filter') == 'overdue' ? 'selected' : '' }}>Overdue</option>
-                        <option value="no_date" {{ request('date_filter') == 'no_date' ? 'selected' : '' }}>No Date</option>
+                        <option value="tomorrow" {{ request('date_filter') == 'tomorrow' ? 'selected' : '' }}>Tomorrow
+                        </option>
+                        <option value="this_week" {{ request('date_filter') == 'this_week' ? 'selected' : '' }}>This
+                            Week</option>
+                        <option value="next_week" {{ request('date_filter') == 'next_week' ? 'selected' : '' }}>Next
+                            Week</option>
+                        <option value="this_month" {{ request('date_filter') == 'this_month' ? 'selected' : '' }}>This
+                            Month</option>
+                        <option value="overdue" {{ request('date_filter') == 'overdue' ? 'selected' : '' }}>Overdue
+                        </option>
+                        <option value="no_date" {{ request('date_filter') == 'no_date' ? 'selected' : '' }}>No Date
+                        </option>
                     </select>
 
                     <!-- Sort By Filter -->
-                    <select name="sort_by" onchange="this.form.submit()" class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <option value="deadline" {{ $sortBy == 'deadline' ? 'selected' : '' }}>Sort by Deadline</option>
-                        <option value="priority" {{ $sortBy == 'priority' ? 'selected' : '' }}>Sort by Priority</option>
+                    <select name="sort_by" onchange="this.form.submit()"
+                        class="px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400 bg-white/60 backdrop-blur-sm transition-all duration-300 hover:shadow-md">
+                        <option value="deadline" {{ request('sort_by', 'deadline') == 'deadline' ? 'selected' : '' }}>
+                            Sort by Deadline</option>
+                        <option value="priority" {{ request('sort_by') == 'priority' ? 'selected' : '' }}>Sort by
+                            Priority</option>
+                        <option value="created_at" {{ request('sort_by') == 'created_at' ? 'selected' : '' }}>Sort by
+                            Created</option>
                     </select>
 
                     <!-- Sort Direction Filter -->
-                    <select name="sort_direction" onchange="this.form.submit()" class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <option value="asc" {{ $sortDirection == 'asc' ? 'selected' : '' }}>Ascending</option>
-                        <option value="desc" {{ $sortDirection == 'desc' ? 'selected' : '' }}>Descending</option>
+                    <select name="sort_direction" onchange="this.form.submit()"
+                        class="px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400 bg-white/60 backdrop-blur-sm transition-all duration-300 hover:shadow-md">
+                        <option value="asc" {{ request('sort_direction', 'asc') == 'asc' ? 'selected' : '' }}>Ascending
+                        </option>
+                        <option value="desc" {{ request('sort_direction') == 'desc' ? 'selected' : '' }}>Descending
+                        </option>
                     </select>
 
-
-                    <a href="{{ route('tasks.create') }}" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center gap-2">
-                        <i class="fas fa-plus"></i> New Task
+                    <!-- New Task Button -->
+                    <a href="{{ route('tasks.create') }}"
+                        class="btn-gradient text-white px-6 py-3.5 rounded-xl font-medium flex items-center gap-2 transition-all duration-300 hover:shadow-lg transform hover:scale-105">
+                        <i class="fa-solid fa-plus"></i> New Task
                     </a>
                 </div>
             </div>
@@ -68,71 +83,80 @@
 
     <!-- Tasks List -->
     <div class="space-y-4">
-        @forelse($tasks as $task)
-        <div class="bg-white rounded-lg shadow p-6 border-l-4 
-            @if($task->priority == 'high') border-red-500 
-            @elseif($task->priority == 'medium') border-yellow-500 
-            @else border-green-500 @endif">
+        @forelse($tasks as $index => $task)
+        <div class="glass-card p-6 task-item animate-fade-in-up hover-lift"
+            style="animation-delay: {{ $index * 0.1 }}s;
+                    border-left: 4px solid @if($task->priority == 'high') #ef4444 @elseif($task->priority == 'medium') #f59e0b @else #10b981 @endif">
+
             <div class="flex items-center justify-between">
-                <div class="flex items-center space-x-4 flex-1">
+                <div class="flex items-start space-x-4 flex-1">
                     <!-- Checkbox -->
-                    <form method="POST" action="{{ route('tasks.toggle-status', $task) }}" class="m-0">
+                    <form method="POST" action="{{ route('tasks.toggle-status', $task) }}" class="m-0 mt-1">
                         @csrf
                         @method('PATCH')
-                        <button type="submit" class="w-6 h-6 border-2 rounded-full flex items-center justify-center 
-                            {{ $task->status == 'completed' ? 'bg-green-500 border-green-500 text-white' : 'border-gray-300' }} hover:border-green-500 transition-colors">
+                        <button type="submit"
+                            class="w-6 h-6 border-2 rounded-full flex items-center justify-center transition-all duration-300 transform hover:scale-110
+                                    {{ $task->status == 'completed' ? 'bg-green-500 border-green-500 text-white shadow-md' : 'border-gray-300 hover:border-green-400 hover:shadow-sm' }}">
                             @if($task->status == 'completed')
-                            <i class="fas fa-check text-xs"></i>
+                            <i class="fa-solid fa-check text-xs"></i>
                             @endif
                         </button>
                     </form>
 
                     <!-- Task Details -->
                     <div class="flex-1">
-                        <h3 class="text-lg font-semibold {{ $task->status == 'completed' ? 'line-through text-gray-500' : 'text-gray-900' }}">
+                        <h3
+                            class="text-xl font-semibold {{ $task->status == 'completed' ? 'line-through text-gray-500' : 'text-gray-800' }} mb-2">
                             {{ $task->title }}
                         </h3>
-                        
+
                         @if($task->description)
-                        <p class="text-gray-600 mt-1 {{ $task->status == 'completed' ? 'line-through' : '' }}">
+                        <p
+                            class="text-gray-600 text-sm {{ $task->status == 'completed' ? 'line-through' : '' }} mb-3 leading-relaxed">
                             {{ $task->description }}
                         </p>
                         @endif
-                        
-                        <div class="flex items-center gap-4 mt-2 text-sm text-gray-500">
-                            <!-- Deadline with better styling -->
+
+                        <div class="flex items-center gap-4 flex-wrap">
+                            <!-- Deadline -->
                             @if($task->deadline)
-                                @php
-                                    $deadline = \Carbon\Carbon::parse($task->deadline);
-                                    $today = \Carbon\Carbon::today();
-                                    $isOverdue = $deadline->lt($today) && $task->status == 'pending';
-                                @endphp
-                                <span class="flex items-center gap-1 {{ $isOverdue ? 'text-red-600 font-semibold' : '' }}">
-                                    <i class="fas fa-calendar {{ $isOverdue ? 'text-red-500' : '' }}"></i>
-                                    {{ $deadline->format('M d, Y') }}
-                                    @if($isOverdue)
-                                        <span class="bg-red-100 text-red-800 px-2 py-1 rounded-full text-xs ml-2">
-                                            Overdue
-                                        </span>
-                                    @endif
+                            @php
+                            $deadline = \Carbon\Carbon::parse($task->deadline);
+                            $today = \Carbon\Carbon::today();
+                            $isOverdue = $deadline->lt($today) && $task->status == 'pending';
+                            @endphp
+                            <span
+                                class="flex items-center gap-2 text-sm font-medium {{ $isOverdue ? 'text-red-500' : 'text-gray-600' }}">
+                                <i class="fa-regular fa-calendar {{ $isOverdue ? 'text-red-400' : '' }}"></i>
+                                {{ $deadline->format('M d, Y') }}
+                                @if($isOverdue)
+                                <span class="bg-red-100 text-red-700 px-2.5 py-1 rounded-full text-xs font-semibold">
+                                    Overdue
                                 </span>
+                                @endif
+                            </span>
                             @else
-                                <span class="flex items-center gap-1 text-gray-400">
-                                    <i class="fas fa-calendar-times"></i>
-                                    No deadline
-                                </span>
+                            <span class="flex items-center gap-2 text-sm text-gray-400 font-medium">
+                                <i class="fa-regular fa-calendar-times"></i>
+                                No deadline
+                            </span>
                             @endif
 
                             <!-- Priority -->
-                            <span class="capitalize px-2 py-1 rounded-full text-xs 
-                                @if($task->priority == 'high') bg-red-100 text-red-800
-                                @elseif($task->priority == 'medium') bg-yellow-100 text-yellow-800
-                                @else bg-green-100 text-green-800 @endif">
+                            <span class="px-3 py-1.5 rounded-full text-xs font-semibold
+                                @if($task->priority == 'high') bg-red-100 text-red-700 border border-red-200
+                                @elseif($task->priority == 'medium') bg-yellow-100 text-yellow-700 border border-yellow-200
+                                @else bg-green-100 text-green-700 border border-green-200 @endif">
+                                <i class="fa-solid fa-flag mr-1"></i>
                                 {{ $task->priority }} priority
                             </span>
 
                             <!-- Status -->
-                            <span class="text-xs {{ $task->status == 'completed' ? 'text-green-600' : 'text-blue-600' }}">
+                            <span
+                                class="px-3 py-1.5 rounded-full text-xs font-semibold
+                                {{ $task->status == 'completed' ? 'bg-green-100 text-green-700 border border-green-200' : 'bg-blue-100 text-blue-700 border border-blue-200' }}">
+                                <i
+                                    class="fa-solid {{ $task->status == 'completed' ? 'fa-check-circle' : 'fa-clock' }} mr-1"></i>
                                 {{ $task->status == 'completed' ? 'Completed' : 'Pending' }}
                             </span>
                         </div>
@@ -140,42 +164,44 @@
                 </div>
 
                 <!-- Actions -->
-                <div class="flex items-center space-x-3">
+                <div class="flex items-center space-x-4 ml-4">
                     <!-- Edit Button -->
-                    <a href="{{ route('tasks.edit', $task) }}" 
-                       class="text-blue-600 hover:text-blue-800 transition-colors"
-                       title="Edit Task">
-                        <i class="fas fa-edit"></i>
+                    <a href="{{ route('tasks.edit', $task) }}"
+                        class="text-indigo-500 hover:text-indigo-700 transition-all duration-200 transform hover:scale-125 p-2 rounded-lg hover:bg-indigo-50"
+                        title="Edit Task">
+                        <i class="fa-regular fa-pen-to-square text-lg"></i>
                     </a>
-                    
+
                     <!-- Delete Button -->
-                    <form method="POST" action="{{ route('tasks.destroy', $task) }}" 
-                          class="m-0" 
-                          onsubmit="return confirm('Are you sure you want to delete this task?')">
+                    <form method="POST" action="{{ route('tasks.destroy', $task) }}" class="m-0"
+                        onsubmit="return confirm('Are you sure you want to delete this task?')">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" 
-                                class="text-red-600 hover:text-red-800 transition-colors"
-                                title="Delete Task">
-                            <i class="fas fa-trash"></i>
+                        <button type="submit"
+                            class="text-red-500 hover:text-red-700 transition-all duration-200 transform hover:scale-125 p-2 rounded-lg hover:bg-red-50"
+                            title="Delete Task">
+                            <i class="fa-regular fa-trash-can text-lg"></i>
                         </button>
                     </form>
                 </div>
             </div>
         </div>
         @empty
-        <div class="bg-white rounded-lg shadow p-8 text-center">
-            <i class="fas fa-clipboard-list text-4xl text-gray-400 mb-4"></i>
-            <h3 class="text-xl font-semibold text-gray-600">No tasks found</h3>
-            <p class="text-gray-500 mt-2">
+        <div class="glass-card p-12 text-center animate-fade-in-up">
+            <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
+                <i class="fa-regular fa-clipboard text-4xl text-gray-400"></i>
+            </div>
+            <h3 class="text-2xl font-semibold text-gray-700 mb-3">No tasks found</h3>
+            <p class="text-gray-500 mb-8 text-lg">
                 @if(request()->has('date_filter') && request('date_filter'))
-                    No tasks found for the selected date filter.
+                No tasks found for the selected date filter.
                 @else
-                    Get started by creating your first task!
+                Get started by creating your first task!
                 @endif
             </p>
-            <a href="{{ route('tasks.create') }}" class="inline-block mt-4 bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
-                Create Task
+            <a href="{{ route('tasks.create') }}"
+                class="btn-gradient text-white px-8 py-4 rounded-xl font-semibold text-lg inline-flex items-center gap-3 transition-all duration-300 hover:shadow-xl transform hover:scale-105">
+                <i class="fa-solid fa-plus"></i> Create Your First Task
             </a>
         </div>
         @endforelse
@@ -183,9 +209,10 @@
 
     <!-- Success Message -->
     @if(session('success'))
-    <div class="success-message fixed bottom-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg transition-opacity duration-300">
-        <div class="flex items-center gap-2">
-            <i class="fas fa-check-circle"></i>
+    <div
+        class="fixed bottom-6 right-6 glass-card px-6 py-4 text-green-700 font-semibold animate-fade-in-up border-l-4 border-green-400">
+        <div class="flex items-center gap-3">
+            <i class="fa-solid fa-check-circle text-green-500 text-xl"></i>
             <span>{{ session('success') }}</span>
         </div>
     </div>
@@ -193,19 +220,62 @@
 </div>
 
 <script>
-    // Auto-hide success message after 3 seconds
-    document.addEventListener('DOMContentLoaded', function() {
-        const successMessages = document.querySelectorAll('.success-message');
-        successMessages.forEach(function(message) {
-            // Only set a new timeout if one isn't already running
-            if (!message.dataset.hiding) {
-                message.dataset.hiding = 'true';
-                setTimeout(() => {
-                    message.style.opacity = '0';
-                    setTimeout(() => message.remove(), 300);
-                }, 3000);
-            }
+    document.addEventListener('DOMContentLoaded', function () {
+
+        if (window.tasksPageInitialized) return;
+        window.tasksPageInitialized = true;
+
+    const successMessages = document.querySelectorAll('.fixed.bottom-4, .fixed.bottom-6');
+    if (successMessages.length > 1) {
+        for (let i = 1; i < successMessages.length; i++) {
+            successMessages[i].remove();
+        }
+    }
+
+        // Add interactive hover effects to task cards
+        const taskCards = document.querySelectorAll('.task-item');
+        taskCards.forEach(card => {
+            card.addEventListener('mouseenter', function () {
+                this.style.transform = 'translateY(-4px)';
+                this.style.boxShadow = '0 12px 40px rgba(0, 0, 0, 0.15)';
+            });
+
+            card.addEventListener('mouseleave', function () {
+                this.style.transform = 'translateY(0)';
+                this.style.boxShadow = '';
+            });
         });
-    });
+
+        // Auto-hide success message after 5 seconds - IMPROVED
+        if (successMessages.length > 0) {
+        const message = successMessages[0];
+        if (!message.dataset.autoHidden) {
+            message.dataset.autoHidden = 'true';
+            
+            setTimeout(() => {
+                message.style.transition = 'opacity 0.3s ease';
+                message.style.opacity = '0';
+                setTimeout(() => {
+                    if (message.parentNode) {
+                        message.remove();
+                    }
+                }, 300);
+            }, 5000);
+        }
+    }
+        });
+
+        // Add focus effects to form elements
+        const inputs = document.querySelectorAll('input, select');
+        inputs.forEach(input => {
+            input.addEventListener('focus', function () {
+                this.parentElement.classList.add('ring-2', 'ring-indigo-200', 'rounded-xl');
+            });
+
+            input.addEventListener('blur', function () {
+                this.parentElement.classList.remove('ring-2', 'ring-indigo-200', 'rounded-xl');
+            });
+        });
+
 </script>
 @endsection
