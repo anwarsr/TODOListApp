@@ -135,6 +135,9 @@
                         Create one
                     </a>
                 </p>
+                <div class="text-center mt-3">
+                    <a href="{{ route('admin.login') }}" class="text-sm text-indigo-600 hover:underline">Login as admin</a>
+                </div>
             </form>
         </div>
     </div>

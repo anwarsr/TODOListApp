@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Route;
 
 // Authentication Routes
@@ -28,4 +29,18 @@ Route::middleware('auth')->group(function () {
     // Profile routes (edit page + update)
     Route::get('/profile/edit', [AuthController::class, 'editProfile'])->name('profile.edit');
     Route::put('/profile', [AuthController::class, 'updateProfile'])->name('profile.update');
+});
+
+// Admin routes (separate admin login)
+Route::prefix('admin')->group(function () {
+    Route::get('/login', [AdminController::class, 'showLogin'])->name('admin.login');
+    Route::post('/login', [AdminController::class, 'login'])->name('admin.login.post');
+
+    // Protected admin routes - use middleware class directly
+    Route::middleware(\App\Http\Middleware\AdminMiddleware::class)->group(function () {
+        Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+        Route::get('/users/{user}/edit', [AdminController::class, 'editUser'])->name('admin.users.edit');
+        Route::put('/users/{user}', [AdminController::class, 'updateUser'])->name('admin.users.update');
+        Route::post('/logout', [AdminController::class, 'logout'])->name('admin.logout');
+    });
 });
