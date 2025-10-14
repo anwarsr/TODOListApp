@@ -131,5 +131,6 @@
             });
         });
     </script>
+    @include('partials.delete_modal')
 </body>
 </html>

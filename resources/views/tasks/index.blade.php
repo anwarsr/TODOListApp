@@ -181,8 +181,8 @@
                     </a>
 
                     <!-- Delete Button -->
-                    <form method="POST" action="{{ route('tasks.destroy', $task) }}" class="m-0"
-                        onsubmit="return confirm('Are you sure you want to delete this task?')">
+                    <form method="POST" action="{{ route('tasks.destroy', $task) }}" class="m-0 delete-task-form"
+                        data-task-title="{{ addslashes($task->title) }}">
                         @csrf
                         @method('DELETE')
                         <button type="submit"
@@ -287,5 +287,8 @@
         });
 
         // (No modal handlers needed; profile editing moved to dedicated page)
+
+        // Delete confirmation UI is provided by a shared partial included in the main layout.
+
 </script>
 @endsection

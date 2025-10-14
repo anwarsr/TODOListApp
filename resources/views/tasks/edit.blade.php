@@ -131,8 +131,8 @@
                 <p class="text-red-600 mb-4">
                     Once you delete a task, there is no going back. Please be certain.
                 </p>
-                <form method="POST" action="{{ route('tasks.destroy', $task) }}" 
-                      onsubmit="return confirm('Are you sure you want to delete this task? This action cannot be undone.')">
+            <form method="POST" action="{{ route('tasks.destroy', $task) }}" class="delete-task-form"
+                data-task-title="{{ addslashes($task->title) }}">
                     @csrf
                     @method('DELETE')
                     <button type="submit" 
