@@ -8,13 +8,7 @@
         <p class="text-gray-600 text-lg">Stay organized and get things done</p>
     </div>
 
-    <!-- Edit Profile Link (prominent) -->
-    <div class="flex justify-end mb-6">
-        <a href="{{ route('profile.edit') }}" class="btn-gradient text-white px-6 py-3.5 rounded-xl font-medium flex items-center gap-2 transition-all duration-300 hover:shadow-lg transform hover:scale-105">
-            <i class="fa-solid fa-user-gear"></i>
-            Edit Profile
-        </a>
-    </div>
+    
 
     <!-- Search and Filters -->
     <div class="glass-card p-6 mb-8 animate-slide-in-left">

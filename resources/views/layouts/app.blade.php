@@ -91,6 +91,10 @@
                 </div>
                 <div class="flex items-center space-x-4">
                     <span class="text-gray-700 font-medium">Welcome, {{ Auth::user()->name }}</span>
+                    <a href="{{ route('profile.edit') }}" class="btn-gradient px-4 py-2 rounded-lg text-white text-sm font-medium transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-user-gear"></i>
+                        Edit Profile
+                    </a>
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
                         <button type="submit" class="btn-gradient px-4 py-2 rounded-lg text-white text-sm font-medium transition-all">
