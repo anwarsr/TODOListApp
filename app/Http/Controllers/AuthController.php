@@ -95,4 +95,25 @@ class AuthController extends Controller
     {
         return view('profile.edit');
     }
+
+    /**
+     * Delete user's own account.
+     */
+    public function deleteAccount(Request $request)
+    {
+        $user = Auth::user();
+        
+        // Delete all user's tasks first (cascade delete)
+        $user->tasks()->delete();
+        
+        // Logout user
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        
+        // Delete the user
+        $user->delete();
+        
+        return redirect('/login')->with('success', 'Your account has been deleted successfully.');
+    }
 }

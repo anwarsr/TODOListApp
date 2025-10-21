@@ -63,4 +63,15 @@ class AdminController extends Controller
 
         return redirect()->route('admin.dashboard')->with('success', 'User updated successfully.');
     }
+
+    public function deleteUser(User $user)
+    {
+        // Delete all user's tasks first (cascade delete)
+        $user->tasks()->delete();
+        
+        // Delete the user
+        $user->delete();
+        
+        return redirect()->route('admin.dashboard')->with('success', 'User deleted successfully.');
+    }
 }

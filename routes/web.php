@@ -29,6 +29,7 @@ Route::middleware('auth')->group(function () {
     // Profile routes (edit page + update)
     Route::get('/profile/edit', [AuthController::class, 'editProfile'])->name('profile.edit');
     Route::put('/profile', [AuthController::class, 'updateProfile'])->name('profile.update');
+    Route::delete('/profile', [AuthController::class, 'deleteAccount'])->name('profile.delete');
 });
 
 // Admin routes (separate admin login)
@@ -41,6 +42,7 @@ Route::prefix('admin')->group(function () {
         Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
         Route::get('/users/{user}/edit', [AdminController::class, 'editUser'])->name('admin.users.edit');
         Route::put('/users/{user}', [AdminController::class, 'updateUser'])->name('admin.users.update');
+        Route::delete('/users/{user}', [AdminController::class, 'deleteUser'])->name('admin.users.delete');
         Route::post('/logout', [AdminController::class, 'logout'])->name('admin.logout');
     });
 });
