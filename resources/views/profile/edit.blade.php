@@ -52,13 +52,6 @@
         <!-- Delete Account Section -->
         <div class="mt-8 pt-6 border-t border-red-200">
             <div class="bg-red-50 border border-red-200 rounded-xl p-6">
-                <h3 class="text-lg font-semibold text-red-800 mb-2 flex items-center gap-2">
-                    <i class="fa-solid fa-triangle-exclamation"></i>
-                    Danger Zone
-                </h3>
-                <p class="text-red-600 mb-4">
-                    Once you delete your account, there is no going back. All your tasks and data will be permanently deleted.
-                </p>
                 <form method="POST" action="{{ route('profile.delete') }}" class="delete-account-form"
                     data-account-name="{{ auth()->user()->name }}">
                     @csrf
