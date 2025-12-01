@@ -3,6 +3,7 @@
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\GoogleAuthController;
 use Illuminate\Support\Facades\Route;
 
 /**
@@ -26,6 +27,19 @@ Route::post('/register', [AuthController::class, 'register']);
 
 // Memproses logout user
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+/**
+ * ========================================
+ * GOOGLE OAUTH ROUTES
+ * ========================================
+ * Routes untuk Google OAuth 2.0 authentication
+ */
+
+// Redirect ke Google OAuth
+Route::get('/auth/google', [GoogleAuthController::class, 'redirectToGoogle'])->name('auth.google');
+
+// Callback dari Google setelah user login
+Route::get('/auth/google/callback', [GoogleAuthController::class, 'handleGoogleCallback']);
 
 /**
  * ========================================

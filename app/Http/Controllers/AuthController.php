@@ -39,6 +39,14 @@ class AuthController extends Controller
             'password' => 'required'
         ]);
 
+        // Cek apakah user login dengan Google (password null)
+        $user = User::where('email', $request->email)->first();
+        if ($user && $user->password === null) {
+            return back()->withErrors([
+                'email' => 'This account uses Google Sign-In. Please use "Sign in with Google" button.',
+            ]);
+        }
+
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
             return redirect()->intended('/tasks');
