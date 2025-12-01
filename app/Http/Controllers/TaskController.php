@@ -7,10 +7,26 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 
+/**
+ * TaskController
+ * 
+ * Controller untuk mengelola semua operasi CRUD task
+ * Termasuk filtering, sorting, dan pencarian task
+ * 
+ * @package App\Http\Controllers
+ */
 class TaskController extends Controller
 {
+    /**
+     * Menampilkan daftar task milik user yang sedang login
+     * dengan fitur filtering, sorting, dan pencarian
+     * 
+     * @param Request $request
+     * @return \Illuminate\View\View
+     */
     public function index(Request $request)
     {
+        // Ambil task hanya milik user yang login
         $query = Task::where('user_id', Auth::id());
 
         // Filter berdasarkan status
@@ -55,7 +71,11 @@ class TaskController extends Controller
     }
 
     /**
-     * Apply date filter to query
+     * Menerapkan filter tanggal pada query task
+     * 
+     * @param mixed $query - Query builder instance
+     * @param string $dateFilter - Opsi: today, tomorrow, this_week, next_week, this_month, overdue, no_date
+     * @return void
      */
     private function applyDateFilter($query, $dateFilter)
     {
@@ -102,13 +122,25 @@ class TaskController extends Controller
         }
     }
 
+    /**
+     * Menampilkan form untuk membuat task baru
+     * 
+     * @return \Illuminate\View\View
+     */
     public function create()
     {
         return view('tasks.create');
     }
 
+    /**
+     * Menyimpan task baru ke database
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function store(Request $request)
     {
+        // Validasi input dari user
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
@@ -129,8 +161,15 @@ class TaskController extends Controller
         return redirect()->route('tasks.index')->with('success', 'Task created successfully.');
     }
 
+    /**
+     * Menampilkan form untuk mengedit task
+     * 
+     * @param Task $task
+     * @return \Illuminate\View\View
+     */
     public function edit(Task $task)
     {
+        // Cek apakah user berhak mengedit task ini
         if ($task->user_id !== Auth::id()) {
             abort(403);
         }
@@ -138,8 +177,16 @@ class TaskController extends Controller
         return view('tasks.edit', compact('task'));
     }
 
+    /**
+     * Mengupdate data task yang ada
+     * 
+     * @param Request $request
+     * @param Task $task
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function update(Request $request, Task $task)
     {
+        // Cek apakah user berhak mengupdate task ini
         if ($task->user_id !== Auth::id()) {
             abort(403);
         }
@@ -163,8 +210,15 @@ class TaskController extends Controller
         return redirect()->route('tasks.index')->with('success', 'Task updated successfully.');
     }
 
+    /**
+     * Menghapus task dari database
+     * 
+     * @param Task $task
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function destroy(Task $task)
     {
+        // Cek apakah user berhak menghapus task ini
         if ($task->user_id !== Auth::id()) {
             abort(403);
         }
@@ -174,8 +228,15 @@ class TaskController extends Controller
         return redirect()->route('tasks.index')->with('success', 'Task deleted successfully.');
     }
 
+    /**
+     * Toggle status task antara pending dan completed
+     * 
+     * @param Task $task
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function toggleStatus(Task $task)
     {
+        // Cek apakah user berhak mengubah status task ini
         if ($task->user_id !== Auth::id()) {
             abort(403);
         }

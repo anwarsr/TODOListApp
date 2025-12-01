@@ -6,13 +6,32 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 
+/**
+ * AuthController
+ * 
+ * Controller untuk mengelola autentikasi user
+ * Termasuk login, register, logout, dan manajemen profile
+ * 
+ * @package App\Http\Controllers
+ */
 class AuthController extends Controller
 {
+    /**
+     * Menampilkan halaman login
+     * 
+     * @return \Illuminate\View\View
+     */
     public function showLogin()
     {
         return view('auth.login');
     }
 
+    /**
+     * Memproses login user
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function login(Request $request)
     {
         $credentials = $request->validate([
@@ -30,11 +49,22 @@ class AuthController extends Controller
         ]);
     }
 
+    /**
+     * Menampilkan halaman register
+     * 
+     * @return \Illuminate\View\View
+     */
     public function showRegister()
     {
         return view('auth.register');
     }
 
+    /**
+     * Memproses registrasi user baru
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function register(Request $request)
     {
         $request->validate([
@@ -54,6 +84,12 @@ class AuthController extends Controller
         return redirect('/tasks')->with('success', 'Registration successful!');
     }
 
+    /**
+     * Memproses logout user
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function logout(Request $request)
     {
         Auth::logout();
