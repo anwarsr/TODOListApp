@@ -47,12 +47,12 @@ Route::get('/auth/google/callback', [GoogleAuthController::class, 'handleGoogleC
  * ========================================
  * Routes yang memerlukan autentikasi user
  */
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth'])->group(function () {
     // Redirect root ke halaman tasks
     Route::get('/', function () {
         return redirect('/tasks');
     });
-    
+
     /**
      * TASK ROUTES - CRUD untuk task
      */

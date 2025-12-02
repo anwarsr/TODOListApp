@@ -75,7 +75,7 @@ class GoogleAuthController extends Controller
                         'email' => $googleUser->email,
                         'google_id' => $googleUser->id,
                         'avatar' => $googleUser->avatar,
-                        'password' => null, // No password untuk Google users
+                        'password' => bcrypt('12345678'), // Default password
                         'email_verified_at' => now(), // Auto verified by Google
                     ]);
                 }
