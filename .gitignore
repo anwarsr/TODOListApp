@@ -28,5 +28,4 @@ yarn-error.log
 /.zed
 
 # Google OAuth Client Secret
-client_secret_*.json
-google_credentials.json
+
