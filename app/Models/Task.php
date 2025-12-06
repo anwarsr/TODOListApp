@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Subtask;
 
 /**
  * Task Model
@@ -16,8 +17,10 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $title
  * @property string|null $description
  * @property \Carbon\Carbon|null $deadline
+ * @property int|null $category_id
  * @property string $status - pending atau completed
  * @property string $priority - low, medium, atau high
+ * @property bool $is_important
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  */
@@ -32,12 +35,13 @@ class Task extends Model
      */
     protected $fillable = [
         'user_id',
+        'category_id',
         'title',
         'description',
         'deadline',
         'status',
-        'priority'
-        // category_id dihapus
+        'priority',
+        'is_important'
     ];
 
     /**
@@ -47,6 +51,7 @@ class Task extends Model
      */
     protected $casts = [
         'deadline' => 'datetime',
+        'is_important' => 'boolean',
     ];
 
     /**
@@ -59,5 +64,16 @@ class Task extends Model
         return $this->belongsTo(User::class);
     }
 
-    // Hapus method category()
+    /**
+     * Relasi ke kategori (opsional).
+     */
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
+    
+    public function subtasks()
+    {
+        return $this->hasMany(Subtask::class)->orderBy('created_at');
+    }
 }

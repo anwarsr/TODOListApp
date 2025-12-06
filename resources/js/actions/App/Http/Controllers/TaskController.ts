@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefaults } from './../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\TaskController::index
- * @see app/Http/Controllers/TaskController.php:27
+ * @see app/Http/Controllers/TaskController.php:29
  * @route '/tasks'
  */
 export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -16,7 +16,7 @@ index.definition = {
 
 /**
 * @see \App\Http\Controllers\TaskController::index
- * @see app/Http/Controllers/TaskController.php:27
+ * @see app/Http/Controllers/TaskController.php:29
  * @route '/tasks'
  */
 index.url = (options?: RouteQueryOptions) => {
@@ -25,7 +25,7 @@ index.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\TaskController::index
- * @see app/Http/Controllers/TaskController.php:27
+ * @see app/Http/Controllers/TaskController.php:29
  * @route '/tasks'
  */
 index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -34,7 +34,7 @@ index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 })
 /**
 * @see \App\Http\Controllers\TaskController::index
- * @see app/Http/Controllers/TaskController.php:27
+ * @see app/Http/Controllers/TaskController.php:29
  * @route '/tasks'
  */
 index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -44,7 +44,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
 /**
 * @see \App\Http\Controllers\TaskController::create
- * @see app/Http/Controllers/TaskController.php:130
+ * @see app/Http/Controllers/TaskController.php:160
  * @route '/tasks/create'
  */
 export const create = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -59,7 +59,7 @@ create.definition = {
 
 /**
 * @see \App\Http\Controllers\TaskController::create
- * @see app/Http/Controllers/TaskController.php:130
+ * @see app/Http/Controllers/TaskController.php:160
  * @route '/tasks/create'
  */
 create.url = (options?: RouteQueryOptions) => {
@@ -68,7 +68,7 @@ create.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\TaskController::create
- * @see app/Http/Controllers/TaskController.php:130
+ * @see app/Http/Controllers/TaskController.php:160
  * @route '/tasks/create'
  */
 create.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -77,7 +77,7 @@ create.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 })
 /**
 * @see \App\Http\Controllers\TaskController::create
- * @see app/Http/Controllers/TaskController.php:130
+ * @see app/Http/Controllers/TaskController.php:160
  * @route '/tasks/create'
  */
 create.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -87,7 +87,7 @@ create.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
 /**
 * @see \App\Http\Controllers\TaskController::store
- * @see app/Http/Controllers/TaskController.php:141
+ * @see app/Http/Controllers/TaskController.php:173
  * @route '/tasks'
  */
 export const store = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -102,7 +102,7 @@ store.definition = {
 
 /**
 * @see \App\Http\Controllers\TaskController::store
- * @see app/Http/Controllers/TaskController.php:141
+ * @see app/Http/Controllers/TaskController.php:173
  * @route '/tasks'
  */
 store.url = (options?: RouteQueryOptions) => {
@@ -111,7 +111,7 @@ store.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\TaskController::store
- * @see app/Http/Controllers/TaskController.php:141
+ * @see app/Http/Controllers/TaskController.php:173
  * @route '/tasks'
  */
 store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -121,7 +121,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
 /**
 * @see \App\Http\Controllers\TaskController::edit
- * @see app/Http/Controllers/TaskController.php:170
+ * @see app/Http/Controllers/TaskController.php:207
  * @route '/tasks/{task}/edit'
  */
 export const edit = (args: { task: number | { id: number } } | [task: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -136,7 +136,7 @@ edit.definition = {
 
 /**
 * @see \App\Http\Controllers\TaskController::edit
- * @see app/Http/Controllers/TaskController.php:170
+ * @see app/Http/Controllers/TaskController.php:207
  * @route '/tasks/{task}/edit'
  */
 edit.url = (args: { task: number | { id: number } } | [task: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -169,7 +169,7 @@ edit.url = (args: { task: number | { id: number } } | [task: number | { id: numb
 
 /**
 * @see \App\Http\Controllers\TaskController::edit
- * @see app/Http/Controllers/TaskController.php:170
+ * @see app/Http/Controllers/TaskController.php:207
  * @route '/tasks/{task}/edit'
  */
 edit.get = (args: { task: number | { id: number } } | [task: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -178,7 +178,7 @@ edit.get = (args: { task: number | { id: number } } | [task: number | { id: numb
 })
 /**
 * @see \App\Http\Controllers\TaskController::edit
- * @see app/Http/Controllers/TaskController.php:170
+ * @see app/Http/Controllers/TaskController.php:207
  * @route '/tasks/{task}/edit'
  */
 edit.head = (args: { task: number | { id: number } } | [task: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -188,7 +188,7 @@ edit.head = (args: { task: number | { id: number } } | [task: number | { id: num
 
 /**
 * @see \App\Http\Controllers\TaskController::update
- * @see app/Http/Controllers/TaskController.php:187
+ * @see app/Http/Controllers/TaskController.php:226
  * @route '/tasks/{task}'
  */
 export const update = (args: { task: number | { id: number } } | [task: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -203,7 +203,7 @@ update.definition = {
 
 /**
 * @see \App\Http\Controllers\TaskController::update
- * @see app/Http/Controllers/TaskController.php:187
+ * @see app/Http/Controllers/TaskController.php:226
  * @route '/tasks/{task}'
  */
 update.url = (args: { task: number | { id: number } } | [task: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -236,7 +236,7 @@ update.url = (args: { task: number | { id: number } } | [task: number | { id: nu
 
 /**
 * @see \App\Http\Controllers\TaskController::update
- * @see app/Http/Controllers/TaskController.php:187
+ * @see app/Http/Controllers/TaskController.php:226
  * @route '/tasks/{task}'
  */
 update.put = (args: { task: number | { id: number } } | [task: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -246,7 +246,7 @@ update.put = (args: { task: number | { id: number } } | [task: number | { id: nu
 
 /**
 * @see \App\Http\Controllers\TaskController::destroy
- * @see app/Http/Controllers/TaskController.php:219
+ * @see app/Http/Controllers/TaskController.php:263
  * @route '/tasks/{task}'
  */
 export const destroy = (args: { task: number | { id: number } } | [task: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -261,7 +261,7 @@ destroy.definition = {
 
 /**
 * @see \App\Http\Controllers\TaskController::destroy
- * @see app/Http/Controllers/TaskController.php:219
+ * @see app/Http/Controllers/TaskController.php:263
  * @route '/tasks/{task}'
  */
 destroy.url = (args: { task: number | { id: number } } | [task: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -294,7 +294,7 @@ destroy.url = (args: { task: number | { id: number } } | [task: number | { id: n
 
 /**
 * @see \App\Http\Controllers\TaskController::destroy
- * @see app/Http/Controllers/TaskController.php:219
+ * @see app/Http/Controllers/TaskController.php:263
  * @route '/tasks/{task}'
  */
 destroy.delete = (args: { task: number | { id: number } } | [task: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -304,7 +304,7 @@ destroy.delete = (args: { task: number | { id: number } } | [task: number | { id
 
 /**
 * @see \App\Http\Controllers\TaskController::toggleStatus
- * @see app/Http/Controllers/TaskController.php:237
+ * @see app/Http/Controllers/TaskController.php:281
  * @route '/tasks/{task}/toggle-status'
  */
 export const toggleStatus = (args: { task: number | { id: number } } | [task: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
@@ -319,7 +319,7 @@ toggleStatus.definition = {
 
 /**
 * @see \App\Http\Controllers\TaskController::toggleStatus
- * @see app/Http/Controllers/TaskController.php:237
+ * @see app/Http/Controllers/TaskController.php:281
  * @route '/tasks/{task}/toggle-status'
  */
 toggleStatus.url = (args: { task: number | { id: number } } | [task: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
@@ -352,13 +352,71 @@ toggleStatus.url = (args: { task: number | { id: number } } | [task: number | { 
 
 /**
 * @see \App\Http\Controllers\TaskController::toggleStatus
- * @see app/Http/Controllers/TaskController.php:237
+ * @see app/Http/Controllers/TaskController.php:281
  * @route '/tasks/{task}/toggle-status'
  */
 toggleStatus.patch = (args: { task: number | { id: number } } | [task: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
     url: toggleStatus.url(args, options),
     method: 'patch',
 })
-const TaskController = { index, create, store, edit, update, destroy, toggleStatus }
+
+/**
+* @see \App\Http\Controllers\TaskController::toggleImportant
+ * @see app/Http/Controllers/TaskController.php:298
+ * @route '/tasks/{task}/toggle-important'
+ */
+export const toggleImportant = (args: { task: number | { id: number } } | [task: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
+    url: toggleImportant.url(args, options),
+    method: 'patch',
+})
+
+toggleImportant.definition = {
+    methods: ["patch"],
+    url: '/tasks/{task}/toggle-important',
+} satisfies RouteDefinition<["patch"]>
+
+/**
+* @see \App\Http\Controllers\TaskController::toggleImportant
+ * @see app/Http/Controllers/TaskController.php:298
+ * @route '/tasks/{task}/toggle-important'
+ */
+toggleImportant.url = (args: { task: number | { id: number } } | [task: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions) => {
+    if (typeof args === 'string' || typeof args === 'number') {
+        args = { task: args }
+    }
+
+            if (typeof args === 'object' && !Array.isArray(args) && 'id' in args) {
+            args = { task: args.id }
+        }
+    
+    if (Array.isArray(args)) {
+        args = {
+                    task: args[0],
+                }
+    }
+
+    args = applyUrlDefaults(args)
+
+    const parsedArgs = {
+                        task: typeof args.task === 'object'
+                ? args.task.id
+                : args.task,
+                }
+
+    return toggleImportant.definition.url
+            .replace('{task}', parsedArgs.task.toString())
+            .replace(/\/+$/, '') + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\TaskController::toggleImportant
+ * @see app/Http/Controllers/TaskController.php:298
+ * @route '/tasks/{task}/toggle-important'
+ */
+toggleImportant.patch = (args: { task: number | { id: number } } | [task: number | { id: number } ] | number | { id: number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
+    url: toggleImportant.url(args, options),
+    method: 'patch',
+})
+const TaskController = { index, create, store, edit, update, destroy, toggleStatus, toggleImportant }
 
 export default TaskController

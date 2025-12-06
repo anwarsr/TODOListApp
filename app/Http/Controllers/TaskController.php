@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Task;
+use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use Illuminate\Validation\Rule;
 
 /**
  * TaskController
@@ -26,8 +28,19 @@ class TaskController extends Controller
      */
     public function index(Request $request)
     {
+        $userId = Auth::id();
+
         // Ambil task hanya milik user yang login
-        $query = Task::where('user_id', Auth::id());
+        $query = Task::where('user_id', $userId);
+
+        $selectedCategory = $request->input('category', 'all');
+
+        // Filter kategori: important (bawaan sistem) atau kategori user
+        if ($selectedCategory === 'important') {
+            $query->where('is_important', true);
+        } elseif ($selectedCategory && $selectedCategory !== 'all') {
+            $query->where('category_id', $selectedCategory);
+        }
 
         // Filter berdasarkan status
         if ($request->has('status') && in_array($request->status, ['pending', 'completed'])) {
@@ -48,11 +61,10 @@ class TaskController extends Controller
         }
 
         // Sorting
-        $sortBy = $request->input('sort_by', 'deadline'); // default sort by deadline
-        $sortDirection = $request->input('sort_direction', 'asc'); // default sort direction asc
+        $sortBy = $request->input('sort_by', 'deadline');
+        $sortDirection = $request->input('sort_direction', 'asc');
 
         if ($sortBy === 'priority') {
-            // Custom order for priority: high -> medium -> low
             $query->orderByRaw("
                 CASE 
                     WHEN priority = 'high' THEN 1 
@@ -61,13 +73,44 @@ class TaskController extends Controller
                 END {$sortDirection}
             ");
         } else {
-            // Default to sorting by deadline or any other column
-            $query->orderBy('deadline', $sortDirection);
+            $column = $sortBy === 'created_at' ? 'created_at' : 'deadline';
+            $query->orderBy($column, $sortDirection);
         }
 
-        $tasks = $query->orderBy('created_at', 'desc')->get();
+        $tasksQuery = $query->with(['category', 'subtasks']);
+
+        if ($sortBy !== 'created_at') {
+            $tasksQuery->orderBy('created_at', 'desc');
+        }
+
+        $tasks = $tasksQuery->get();
+
+        $categories = Category::where('user_id', $userId)
+            ->orderBy('name')
+            ->withCount(['tasks' => function ($q) use ($userId) {
+                $q->where('user_id', $userId);
+            }])
+            ->get();
+
+        $counts = [
+            'all' => Task::where('user_id', $userId)->count(),
+            'important' => Task::where('user_id', $userId)->where('is_important', true)->count(),
+        ];
+
+        $selectedCategoryName = 'All Tasks';
+        $selectedCategoryDescription = null;
+
+        if ($selectedCategory === 'important') {
+            $selectedCategoryName = 'Important';
+        } elseif ($selectedCategory && $selectedCategory !== 'all') {
+            $found = $categories->firstWhere('id', (int) $selectedCategory);
+            if ($found) {
+                $selectedCategoryName = $found->name;
+                $selectedCategoryDescription = $found->description;
+            }
+        }
         
-        return view('tasks.index', compact('tasks', 'sortBy', 'sortDirection'));
+        return view('tasks.index', compact('tasks', 'sortBy', 'sortDirection', 'categories', 'selectedCategory', 'counts', 'selectedCategoryName', 'selectedCategoryDescription'));
     }
 
     /**
@@ -129,7 +172,9 @@ class TaskController extends Controller
      */
     public function create()
     {
-        return view('tasks.create');
+        $categories = Category::where('user_id', Auth::id())->orderBy('name')->get();
+
+        return view('tasks.create', compact('categories'));
     }
 
     /**
@@ -145,17 +190,22 @@ class TaskController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'deadline' => 'nullable|date',
-            'priority' => 'required|in:low,medium,high'
-            // category_id dihapus dari validation
+            'priority' => 'required|in:low,medium,high',
+            'category_id' => [
+                'nullable',
+                Rule::exists('categories', 'id')->where(fn ($q) => $q->where('user_id', Auth::id()))
+            ],
+            'is_important' => 'nullable|boolean'
         ]);
 
         Task::create([
             'user_id' => Auth::id(),
+            'category_id' => $request->category_id,
             'title' => $request->title,
             'description' => $request->description,
             'deadline' => $request->deadline,
-            'priority' => $request->priority
-            // category_id dihapus
+            'priority' => $request->priority,
+            'is_important' => $request->boolean('is_important')
         ]);
 
         return redirect()->route('tasks.index')->with('success', 'Task created successfully.');
@@ -173,8 +223,10 @@ class TaskController extends Controller
         if ($task->user_id !== Auth::id()) {
             abort(403);
         }
+
+        $categories = Category::where('user_id', Auth::id())->orderBy('name')->get();
         
-        return view('tasks.edit', compact('task'));
+        return view('tasks.edit', compact('task', 'categories'));
     }
 
     /**
@@ -195,16 +247,21 @@ class TaskController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'deadline' => 'nullable|date',
-            'priority' => 'required|in:low,medium,high'
-            // category_id dihapus dari validation
+            'priority' => 'required|in:low,medium,high',
+            'category_id' => [
+                'nullable',
+                Rule::exists('categories', 'id')->where(fn ($q) => $q->where('user_id', Auth::id()))
+            ],
+            'is_important' => 'nullable|boolean'
         ]);
 
         $task->update([
+            'category_id' => $request->category_id,
             'title' => $request->title,
             'description' => $request->description,
             'deadline' => $request->deadline,
-            'priority' => $request->priority
-            // category_id dihapus
+            'priority' => $request->priority,
+            'is_important' => $request->boolean('is_important')
         ]);
 
         return redirect()->route('tasks.index')->with('success', 'Task updated successfully.');
@@ -241,10 +298,31 @@ class TaskController extends Controller
             abort(403);
         }
         
-        $task->update([
-            'status' => $task->status === 'completed' ? 'pending' : 'completed'
-        ]);
+        $newStatus = $task->status === 'completed' ? 'pending' : 'completed';
+
+        $task->update(['status' => $newStatus]);
+
+        // Jika task selesai, tandai semua subtask sebagai selesai juga.
+        if ($newStatus === 'completed') {
+            $task->subtasks()->where('is_completed', false)->update(['is_completed' => true]);
+        }
 
         return redirect()->back()->with('success', 'Task status updated.');
+    }
+
+    /**
+     * Toggle status penting (bintang) pada task.
+     */
+    public function toggleImportant(Task $task)
+    {
+        if ($task->user_id !== Auth::id()) {
+            abort(403);
+        }
+
+        $task->update([
+            'is_important' => ! $task->is_important
+        ]);
+
+        return redirect()->back()->with('success', $task->is_important ? 'Marked as important.' : 'Removed from important.');
     }
 }

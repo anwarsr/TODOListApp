@@ -12,79 +12,93 @@ Dokumen ini menjelaskan secara detail bagaimana project TODO List App memenuhi s
 
 **Fitur yang Diimplementasikan:**
 
-#### **Autentikasi & Otorisasi**
+#### **Autentikasi & Otorisasi (Role-based + Google OAuth)**
 - ✅ **Register User** (`AuthController@register`)
-  - Form validasi lengkap (name, email, password, password_confirmation)
-  - Email unique validation
-  - Password hashing otomatis
-  - Auto login setelah register
+    - Validasi: name, email unik, password + confirmation
+    - Password hashing
+    - Auto login; default role `user`
+    - Auto seeding kategori default per user
   
 - ✅ **Login User** (`AuthController@login`)
-  - Email dan password validation
-  - Session management
-  - Remember me functionality
-  - Redirect ke halaman tasks
+    - Email/password validation
+    - Session regenerate
+    - Redirect berdasar role (admin → dashboard, user → tasks)
+    - Blokir akun Google-only dari login password
   
-- ✅ **Logout User** (`AuthController@logout`)
-  - Session invalidation
-  - Token regeneration
-  - Redirect ke halaman login
+- ✅ **Google OAuth** (`GoogleAuthController@handleGoogleCallback`)
+    - Login/register via Google, simpan `google_id`, `avatar`
+    - Pastikan role minimal `user`
+    - Redirect sesuai role
 
-- ✅ **Admin Login Terpisah** (`AdminController@login`)
-  - Kredensial: admin/admin
-  - Session-based authentication
-  - Redirect ke admin dashboard
+- ✅ **Logout User** (`AuthController@logout`)
+    - Session invalidation + token regen
+    - Redirect ke login
+
+- ✅ **Admin (Role)**
+    - Login menggunakan akun ber-role `admin` (tidak ada login terpisah)
+    - Proteksi middleware `AdminMiddleware`
+    - Admin dapat membuat user (pilih role), mengedit, menghapus (dengan proteksi admin-terakhir)
 
 #### **Manajemen Task (User)**
 - ✅ **Create Task** (`TaskController@store`)
-  - Input: title, description, deadline, priority
-  - Validasi backend lengkap
-  - Auto-assign user_id dari user yang login
+    - Input: title, description, deadline, priority (low/medium/high), is_important, category (per user)
+    - Validasi backend + kepemilikan kategori
+    - Auto-assign user_id, default status pending
   
 - ✅ **Read/List Tasks** (`TaskController@index`)
-  - Tampilkan hanya task milik user yang login
-  - Multiple filter options
-  - Search functionality
-  - Sorting options
+    - Hanya task milik user login
+    - Filter: status, kategori, important bucket, rentang tanggal (today/tomorrow/this_week/next_week/this_month/overdue/no_date)
+    - Search title/description
+    - Sort by deadline/priority/created
+    - Load kategori + subtasks
   
 - ✅ **Update Task** (`TaskController@update`)
-  - Edit semua field task
-  - Validasi kepemilikan task
-  - Update timestamp otomatis
+    - Edit semua field termasuk kategori/important
+    - Validasi kepemilikan task & kategori
   
 - ✅ **Delete Task** (`TaskController@destroy`)
-  - Konfirmasi sebelum delete
-  - Validasi kepemilikan task
-  - Soft delete (bisa diubah jika perlu)
+    - Konfirmasi sebelum delete
+    - Cascade subtasks
   
 - ✅ **Toggle Status** (`TaskController@toggleStatus`)
-  - Switch antara pending ↔ completed
-  - One-click action
-  - Real-time UI update
+    - Switch pending ↔ completed
+    - Jika task selesai, subtasks ditandai selesai
+
+- ✅ **Toggle Important** (`TaskController@toggleImportant`)
+    - Tandai/lepaskan star task
+
+- ✅ **Subtasks** (`SubtaskController`)
+    - Create/toggle/delete subtasks per task
+    - Sinkron status task: jika ada subtask belum selesai → task pending; semua selesai → task completed
 
 #### **Manajemen Profile**
 - ✅ **Edit Profile** (`AuthController@updateProfile`)
   - Update name, email, password
   - Email unique validation (kecuali milik sendiri)
   - Password confirmation required
+    - Link kembali menyesuaikan role (admin → admin dashboard, user → tasks index)
   
 - ✅ **Delete Account** (`AuthController@deleteAccount`)
   - Konfirmasi sebelum delete
   - Cascade delete semua task user
   - Auto logout setelah delete
 
-#### **Admin Panel**
+#### **Admin Panel (Role-based)**
 - ✅ **Dashboard Admin** (`AdminController@dashboard`)
-  - List semua user dengan pagination
-  - User count statistics
+    - List user + pagination + ringkasan count admin/user
+    - Quick actions: create account, edit profile, logout admin
   
+- ✅ **Create User** (`AdminController@storeUser`)
+    - Admin dapat membuat akun baru (role user/admin) tanpa auto-login
+    - Password confirmation required
+
 - ✅ **Edit User** (`AdminController@updateUser`)
-  - Admin bisa update data user lain
-  - Update name, email, password
+    - Update name, email, password (opsional), role
   
 - ✅ **Delete User** (`AdminController@deleteUser`)
-  - Konfirmasi sebelum delete
-  - Cascade delete semua task user
+    - Konfirmasi sebelum delete
+    - Cascade delete tasks
+    - Proteksi: admin tidak bisa menghapus dirinya jika itu admin terakhir
   
 **File Terkait:**
 ```

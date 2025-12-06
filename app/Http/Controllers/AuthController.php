@@ -49,6 +49,13 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
+            $user = Auth::user();
+
+            // Redirect based on role
+            if ($user->role === 'admin') {
+                return redirect()->route('admin.dashboard');
+            }
+
             return redirect()->intended('/tasks');
         }
 
@@ -84,8 +91,11 @@ class AuthController extends Controller
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => bcrypt($request->password)
+            'password' => bcrypt($request->password),
+            'role' => 'user',
         ]);
+
+        $user->ensureDefaultCategories();
 
         Auth::login($user);
 

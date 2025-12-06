@@ -3,7 +3,13 @@
 @section('content')
 <div class="max-w-xl mx-auto mt-8">
     <div class="glass-card p-6">
-        <h1 class="text-xl font-semibold mb-4">Edit User</h1>
+        <div class="flex items-center justify-between mb-4">
+            <div>
+                <p class="text-xs uppercase tracking-[0.3em] text-indigo-700">Admin</p>
+                <h1 class="text-xl font-semibold">Edit User</h1>
+            </div>
+            <a href="{{ route('admin.dashboard') }}" class="text-sm text-slate-600 hover:text-slate-800">Back</a>
+        </div>
 
         @if($errors->any())
         <div class="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg mb-4">
@@ -39,8 +45,16 @@
                 <input type="password" name="password_confirmation" placeholder="Confirm new password" class="w-full px-3 py-2 border rounded-lg" />
             </div>
 
-            <div class="flex justify-between items-center">
-                <a href="{{ route('admin.dashboard') }}" class="text-sm text-gray-600">Back to dashboard</a>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Role</label>
+                <select name="role" class="w-full px-3 py-2 border rounded-lg" required>
+                    <option value="user" {{ $user->role === 'user' ? 'selected' : '' }}>User</option>
+                    <option value="admin" {{ $user->role === 'admin' ? 'selected' : '' }}>Admin</option>
+                </select>
+            </div>
+
+            <div class="flex justify-end items-center gap-3">
+                <a href="{{ route('admin.dashboard') }}" class="px-4 py-2 rounded-lg border border-slate-200 text-slate-700">Cancel</a>
                 <button type="submit" class="btn-gradient px-4 py-2 rounded-lg text-white">Save</button>
             </div>
         </form>

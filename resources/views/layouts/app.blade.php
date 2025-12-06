@@ -5,132 +5,191 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GenZTask</title>
-    <!-- Inline SVG favicon for GenZTask (task-style icon) -->
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'>
-        <rect rx='18' width='100' height='100' fill='%23667eea'/>
-        <rect x='22' y='24' width='56' height='8' rx='3' fill='%23ffffff' opacity='0.15'/>
-        <rect x='22' y='40' width='36' height='8' rx='3' fill='%23ffffff' opacity='0.15'/>
-        <rect x='22' y='56' width='56' height='8' rx='3' fill='%23ffffff' opacity='0.15'/>
-        <path d='M30 58 L44 72 L74 38' stroke='%23fff' stroke-width='6' fill='none' stroke-linecap='round' stroke-linejoin='round'/>
-    </svg>">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect rx='18' width='100' height='100' fill='%230ea5e9'/><path d='M28 52 L42 66 L74 34' stroke='%23fff' stroke-width='7' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="{{ asset('css/animations.css') }}">
     <style>
+        :root {
+            --sky: #e0f2fe;
+            --navy: #0f172a;
+            --indigo: #6366f1;
+            --purple: #8b5cf6;
+            --slate: #1e293b;
+        }
+
         body {
-            background: linear-gradient(120deg, #f5f7fa 0%, #c3cfe2 100%);
             min-height: 100vh;
-            font-family: 'Inter', sans-serif;
-            color: #2d3748;
+            font-family: 'Manrope', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(140deg, #0ea5e9 0%, #a5b4fc 35%, #f8fafc 70%);
+            color: var(--navy);
         }
 
-        .glass-nav {
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        .app-nav {
+            position: sticky;
+            top: 0;
+            z-index: 40;
+            backdrop-filter: blur(16px);
+            background: rgba(255, 255, 255, 0.65);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.35);
+            box-shadow: 0 12px 40px rgba(15, 23, 42, 0.15);
         }
 
-        .glass-card {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(12px);
+        .app-shell {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 32px;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 32px 20px 48px;
+        }
+
+        .sidebar-panel {
+            background: rgba(255, 255, 255, 0.86);
+            border-radius: 22px;
+            box-shadow: 0 18px 50px rgba(15, 23, 42, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.55);
+            backdrop-filter: blur(18px);
+        }
+
+        .main-panel {
+            background: rgba(255, 255, 255, 0.92);
+            border-radius: 26px;
+            box-shadow: 0 18px 50px rgba(15, 23, 42, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(18px);
+        }
+
+        .category-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 12px 14px;
+            border-radius: 14px;
+            transition: all 0.2s ease;
+            color: #0f172a;
+        }
+
+        .category-item:hover {
+            background: rgba(99, 102, 241, 0.08);
+        }
+
+        .category-item.is-active {
+            background: linear-gradient(120deg, rgba(99, 102, 241, 0.15), rgba(14, 165, 233, 0.15));
+            border: 1px solid rgba(99, 102, 241, 0.25);
+        }
+
+        .task-card {
             border-radius: 16px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid rgba(226, 232, 240, 0.9);
+            padding: 18px 16px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.9));
+            box-shadow: 0 12px 32px rgba(15, 23, 42, 0.08);
+            transition: transform 0.18s ease, box-shadow 0.18s ease;
         }
 
-        .glass-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.15);
+        .task-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 18px 36px rgba(15, 23, 42, 0.12);
         }
 
-        .btn-gradient {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            transition: all 0.3s ease;
+        .pill {
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: capitalize;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
         }
 
-        .btn-gradient:hover {
-            background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
-            transform: scale(1.05);
+        .primary-btn {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: #fff;
+            border-radius: 12px;
+            padding: 10px 16px;
+            font-weight: 700;
+            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.35);
+            transition: transform 0.12s ease, box-shadow 0.12s ease;
         }
 
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.6);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            transition: all 0.3s ease;
+        .primary-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 14px 30px rgba(99, 102, 241, 0.4);
         }
 
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.8);
-            transform: scale(1.05);
+        .ghost-btn {
+            background: rgba(99, 102, 241, 0.12);
+            color: #4338ca;
+            border-radius: 12px;
+            padding: 10px 16px;
+            font-weight: 700;
         }
 
-        .task-item {
-            transition: all 0.3s ease;
+        .input-field {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(226, 232, 240, 0.9);
+            border-radius: 12px;
+            padding: 12px 14px;
+            width: 100%;
+            transition: border-color 0.15s ease, box-shadow 0.15s ease;
         }
 
-        .task-item:hover {
-            transform: translateX(5px);
+        .input-field:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.18);
         }
-
     </style>
 </head>
 
-<body class="bg-gray-50">
+<body>
     @auth
-    <nav class="glass-nav sticky top-0 z-50 animate-fade-in-up">
-        <div class="container mx-auto px-4">
-            <div class="flex justify-between items-center py-4">
-                <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 bg-white rounded-xl shadow-sm flex items-center justify-center animate-pulse-slow">
-                        <i class="fa-solid fa-list-check text-xl text-indigo-500"></i>
+    <nav class="app-nav">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center gap-3">
+                    <div class="w-11 h-11 rounded-2xl bg-indigo-500 flex items-center justify-center text-white shadow-lg">
+                        <i class="fa-solid fa-check-double text-lg"></i>
                     </div>
-                    <h1 class="text-xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-purple-500 to-pink-500">GenZtask</h1>
-                </div>
-                <div class="flex items-center space-x-4">
-                    <span class="text-gray-700 font-medium">Welcome, {{ Auth::user()->name }}</span>
-                    <a href="{{ route('profile.edit') }}" class="btn-gradient px-4 py-2 rounded-lg text-white text-sm font-medium transition-all flex items-center gap-2">
-                        <i class="fa-solid fa-user-gear"></i>
-                        Edit Profile
-                    </a>
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        <button type="submit" class="btn-gradient px-4 py-2 rounded-lg text-white text-sm font-medium transition-all">
-                            <i class="fa-solid fa-right-from-bracket mr-2"></i> Logout
-                        </button>
-                    </form>
+                    <div>
+                        <p class="text-xs uppercase tracking-[0.18em] text-slate-500">GenZtask</p>
+                        <p class="text-lg font-bold text-slate-900">Focus on what matters</p>
+                    </div>
                 </div>
             </div>
         </div>
     </nav>
     @endauth
 
-    <main class="container mx-auto px-4 py-8">
+    <main class="px-4 md:px-6 py-6">
         @yield('content')
     </main>
 
     @if(session('success'))
-    <div class="fixed bottom-4 right-4 glass-card px-6 py-3 text-green-700 font-medium animate-fade-in-up">
+    <div class="fixed bottom-4 right-4 bg-white/90 border border-green-200 shadow-xl px-5 py-3 rounded-xl text-green-700 font-semibold animate-fade-in-up">
         <i class="fa-solid fa-check-circle mr-2"></i> {{ session('success') }}
     </div>
     @endif
 
     @if(session('error'))
-    <div class="fixed bottom-4 right-4 glass-card px-6 py-3 text-red-600 font-medium animate-fade-in-up">
+    <div class="fixed bottom-4 right-4 bg-white/90 border border-red-200 shadow-xl px-5 py-3 rounded-xl text-red-600 font-semibold animate-fade-in-up">
         <i class="fa-solid fa-exclamation-circle mr-2"></i> {{ session('error') }}
     </div>
     @endif
 
     <script>
-        // Auto-hide messages after 5 seconds
         document.addEventListener('DOMContentLoaded', function() {
             const messages = document.querySelectorAll('.fixed.bottom-4');
             messages.forEach(message => {
                 setTimeout(() => {
                     message.style.opacity = '0';
-                    setTimeout(() => message.remove(), 300);
+                    setTimeout(() => message.remove(), 320);
                 }, 5000);
             });
         });

@@ -4,6 +4,8 @@ use App\Http\Controllers\TaskController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\GoogleAuthController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\SubtaskController;
 use Illuminate\Support\Facades\Route;
 
 /**
@@ -50,6 +52,10 @@ Route::get('/auth/google/callback', [GoogleAuthController::class, 'handleGoogleC
 Route::middleware(['auth'])->group(function () {
     // Redirect root ke halaman tasks
     Route::get('/', function () {
+        if (auth()->user() && auth()->user()->role === 'admin') {
+            return redirect()->route('admin.dashboard');
+        }
+
         return redirect('/tasks');
     });
 
@@ -76,6 +82,19 @@ Route::middleware(['auth'])->group(function () {
     
     // Toggle status task (pending <-> completed)
     Route::patch('/tasks/{task}/toggle-status', [TaskController::class, 'toggleStatus'])->name('tasks.toggle-status');
+
+    // Toggle important (star) task
+    Route::patch('/tasks/{task}/toggle-important', [TaskController::class, 'toggleImportant'])->name('tasks.toggle-important');
+
+    // Subtasks
+    Route::post('/tasks/{task}/subtasks', [SubtaskController::class, 'store'])->name('subtasks.store');
+    Route::patch('/subtasks/{subtask}/toggle', [SubtaskController::class, 'toggle'])->name('subtasks.toggle');
+    Route::delete('/subtasks/{subtask}', [SubtaskController::class, 'destroy'])->name('subtasks.destroy');
+
+    // Kategori buatan user
+    Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
+    Route::patch('/categories/{category}', [CategoryController::class, 'update'])->name('categories.update');
+    Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
     
     /**
      * PROFILE ROUTES - Manajemen profile user
@@ -92,34 +111,29 @@ Route::middleware(['auth'])->group(function () {
 
 /**
  * ========================================
- * ADMIN ROUTES
+ * ADMIN ROUTES (Role-based)
  * ========================================
- * Routes khusus untuk admin panel
  */
-Route::prefix('admin')->group(function () {
-    // Menampilkan halaman login admin
-    Route::get('/login', [AdminController::class, 'showLogin'])->name('admin.login');
-    
-    // Memproses login admin
-    Route::post('/login', [AdminController::class, 'login'])->name('admin.login.post');
-
-    /**
-     * Protected admin routes - Memerlukan AdminMiddleware
-     */
-    Route::middleware(\App\Http\Middleware\AdminMiddleware::class)->group(function () {
+Route::middleware(['auth', \App\Http\Middleware\AdminMiddleware::class])
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {
         // Dashboard admin - menampilkan semua user
-        Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
-        
+        Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+
         // Menampilkan form edit user
-        Route::get('/users/{user}/edit', [AdminController::class, 'editUser'])->name('admin.users.edit');
-        
+        Route::get('/users/{user}/edit', [AdminController::class, 'editUser'])->name('users.edit');
+
+        // Create user (admin can choose role)
+        Route::get('/users/create', [AdminController::class, 'createUser'])->name('users.create');
+        Route::post('/users', [AdminController::class, 'storeUser'])->name('users.store');
+
         // Mengupdate data user
-        Route::put('/users/{user}', [AdminController::class, 'updateUser'])->name('admin.users.update');
-        
+        Route::put('/users/{user}', [AdminController::class, 'updateUser'])->name('users.update');
+
         // Menghapus user dan semua tasknya
-        Route::delete('/users/{user}', [AdminController::class, 'deleteUser'])->name('admin.users.delete');
-        
+        Route::delete('/users/{user}', [AdminController::class, 'deleteUser'])->name('users.delete');
+
         // Logout admin
-        Route::post('/logout', [AdminController::class, 'logout'])->name('admin.logout');
+        Route::post('/logout', [AdminController::class, 'logout'])->name('logout');
     });
-});

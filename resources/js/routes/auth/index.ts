@@ -1,5 +1,4 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition } from './../../wayfinder'
-import google723582 from './google'
 /**
 * @see \App\Http\Controllers\GoogleAuthController::google
  * @see app/Http/Controllers/GoogleAuthController.php:29
@@ -43,7 +42,7 @@ google.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     method: 'head',
 })
 const auth = {
-    google: Object.assign(google, google723582),
+    google: Object.assign(google, google),
 }
 
 export default auth

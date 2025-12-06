@@ -16,91 +16,78 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="{{ asset('css/animations.css') }}">
     <style>
-        /* Background soft gradient ala HealthyTogether */
         body {
-            background: linear-gradient(120deg, #f5f7fa 0%, #c3cfe2 100%);
             min-height: 100vh;
             font-family: 'Inter', sans-serif;
-            color: #2d3748;
+            color: #0f172a;
+            background: radial-gradient(circle at 20% 20%, rgba(99, 102, 241, 0.18), transparent 32%),
+                        radial-gradient(circle at 80% 0%, rgba(14, 165, 233, 0.16), transparent 34%),
+                        linear-gradient(140deg, #0ea5e9 0%, #a5b4fc 38%, #f8fafc 75%);
         }
 
         .glass-card {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(12px);
-            border-radius: 20px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(18px);
+            border-radius: 22px;
+            box-shadow: 0 30px 80px rgba(15, 23, 42, 0.18);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
 
         .glass-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12);
+            transform: translateY(-2px);
+            box-shadow: 0 34px 90px rgba(15, 23, 42, 0.2);
         }
 
         .btn-gradient {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            transition: all 0.3s ease;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            transition: all 0.2s ease;
         }
 
         .btn-gradient:hover {
-            background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
-            transform: scale(1.05);
+            transform: translateY(-1px);
+            box-shadow: 0 12px 28px rgba(99, 102, 241, 0.35);
         }
 
-        .bg-shape {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(100px);
-            opacity: 0.3;
+        .input-field {
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(226, 232, 240, 0.9);
+            border-radius: 14px;
+            padding: 12px 14px;
+            width: 100%;
+            transition: border-color 0.15s ease, box-shadow 0.15s ease;
         }
 
-        .bg-shape.one {
-            width: 300px;
-            height: 300px;
-            background: #a78bfa;
-            top: 10%;
-            left: 15%;
+        .input-field:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.18);
         }
-
-        .bg-shape.two {
-            width: 400px;
-            height: 400px;
-            background: #63b3ed;
-            bottom: 10%;
-            right: 10%;
-        }
-
     </style>
 </head>
 
 <body>
-    <div class="relative flex items-center justify-center min-h-screen overflow-hidden">
-        <div class="bg-shape one animate-float"></div>
-        <div class="bg-shape two animate-float" style="animation-delay: 1.5s;"></div>
-
-        <div class="max-w-md w-full px-8 py-10 glass-card animate-fade-in-up">
-            <!-- Logo -->
-            <div class="text-center mb-10">
-                <div class="text-center animate-fade-in-up">
-                <div
-                    class="mx-auto w-24 h-24 bg-gradient-to-tr from-indigo-400 via-purple-400 to-pink-400 rounded-3xl shadow-lg flex items-center justify-center mb-4 animate-fade-in">
-                    <div class="bg-white w-20 h-20 rounded-2xl flex items-center justify-center shadow-inner animate-pulse-slow">
-                        <i class="fa-solid fa-list-check text-4xl text-indigo-600"></i>
+    <div class="min-h-screen flex items-center px-6 py-12">
+        <div class="max-w-6xl w-full mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10 glass-card p-10 lg:p-12 animate-fade-in-up">
+            <!-- Hero Copy -->
+            <div class="space-y-6 flex flex-col justify-center">
+                <div class="flex items-center gap-3">
+                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-indigo-400 via-purple-400 to-sky-400 shadow-lg flex items-center justify-center">
+                        <div class="bg-white w-10 h-10 rounded-xl flex items-center justify-center shadow-inner">
+                            <i class="fa-solid fa-list-check text-2xl text-indigo-600"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <p class="text-xs uppercase tracking-[0.3em] text-indigo-700">GenZtask</p>
+                        <h2 class="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-700 via-purple-600 to-sky-500">
+                            Welcome Back
+                        </h2>
                     </div>
                 </div>
-                <h2
-                    class="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-purple-500 to-pink-500 tracking-wide">
-                    GenZtask
-                </h2>
-                <h3 class="text-2xl font-semibold text-gray-800 mt-2 animate-fade-in-up">
-                    Welcome Back
-                </h3>
-                <p class="text-gray-500 text-sm mt-1">
-                    Sign in to manage your tasks
+                <p class="text-lg text-slate-700 leading-relaxed max-w-xl">
+                    Pick up where you left off with a clean, focused workspace. Sign in to keep your tasks synced and flowing across all your devices.
                 </p>
             </div>
-
 
             <!-- Login Form -->
             <form method="POST" action="{{ route('login') }}" class="space-y-5">
@@ -110,8 +97,7 @@
                     <div class="relative">
                         <i class="fa-regular fa-envelope absolute left-3 top-4 text-gray-400"></i>
                         <input id="email" name="email" type="email" required autocomplete="email"
-                            class="w-full pl-10 pr-3 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition-all"
-                            placeholder="you@example.com">
+                            class="input-field pl-10 pr-3" placeholder="you@example.com">
                     </div>
                 </div>
 
@@ -120,8 +106,7 @@
                     <div class="relative">
                         <i class="fa-solid fa-lock absolute left-3 top-4 text-gray-400"></i>
                         <input id="password" name="password" type="password" required autocomplete="current-password"
-                            class="w-full pl-10 pr-3 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition-all"
-                            placeholder="••••••••">
+                            class="input-field pl-10 pr-3" placeholder="••••••••">
                     </div>
                 </div>
 
@@ -132,7 +117,7 @@
                 @endif
 
                 <button type="submit"
-                    class="w-full py-3 text-white font-medium rounded-lg btn-gradient focus:ring-2 focus:ring-offset-2 focus:ring-indigo-400">
+                    class="w-full py-3 text-white font-semibold rounded-xl btn-gradient shadow-md">
                     <i class="fa-solid fa-right-to-bracket mr-2"></i> Sign In
                 </button>
 
@@ -146,16 +131,16 @@
                 <!-- Divider -->
                 <div class="relative my-6">
                     <div class="absolute inset-0 flex items-center">
-                        <div class="w-full border-t border-gray-300"></div>
+                        <div class="w-full border-t border-gray-200"></div>
                     </div>
                     <div class="relative flex justify-center text-sm">
-                        <span class="px-2 bg-white text-gray-500">Or continue with</span>
+                        <span class="px-2 bg-white/90 text-gray-500">Or continue with</span>
                     </div>
                 </div>
 
                 <!-- Google Sign In Button -->
-                <a href="{{ route('auth.google') }}" 
-                   class="w-full flex items-center justify-center gap-3 px-4 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-all duration-300 hover:shadow-md group">
+                     <a href="{{ route('auth.google') }}" 
+                         class="w-full flex items-center justify-center gap-3 px-4 py-3 border border-gray-200 rounded-xl hover:bg-white transition-all duration-200 hover:shadow-md group">
                     <svg class="w-5 h-5" viewBox="0 0 24 24">
                         <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                         <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
@@ -164,10 +149,6 @@
                     </svg>
                     <span class="text-gray-700 font-medium group-hover:text-gray-900">Sign in with Google</span>
                 </a>
-
-                <div class="text-center mt-3">
-                    <a href="{{ route('admin.login') }}" class="text-sm text-indigo-600 hover:underline">Login as admin</a>
-                </div>
             </form>
         </div>
     </div>

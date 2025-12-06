@@ -6,7 +6,9 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
+use Laravel\Socialite\Contracts\User as SocialiteUser;
 use Exception;
+use App\Models\Category;
 
 /**
  * GoogleAuthController
@@ -46,44 +48,63 @@ class GoogleAuthController extends Controller
     {
         try {
             // Get user info from Google (id, name, email, avatar)
+            /** @var SocialiteUser $googleUser */
             $googleUser = Socialite::driver('google')->user();
+
+            $googleId = $googleUser->getId();
+            $googleName = $googleUser->getName();
+            $googleEmail = $googleUser->getEmail();
+            $googleAvatar = $googleUser->getAvatar();
             
             // Cek apakah user sudah pernah login dengan Google (by google_id)
-            $user = User::where('google_id', $googleUser->id)->first();
+            $user = User::where('google_id', $googleId)->first();
             
             if ($user) {
                 // User sudah ada, update info jika ada perubahan
                 $user->update([
-                    'name' => $googleUser->name,
-                    'email' => $googleUser->email,
-                    'avatar' => $googleUser->avatar,
+                    'name' => $googleName,
+                    'email' => $googleEmail,
+                    'avatar' => $googleAvatar,
                 ]);
             } else {
                 // Cek apakah email sudah terdaftar (user register normal)
-                $user = User::where('email', $googleUser->email)->first();
+                $user = User::where('email', $googleEmail)->first();
                 
                 if ($user) {
                     // Link Google account ke existing user
                     $user->update([
-                        'google_id' => $googleUser->id,
-                        'avatar' => $googleUser->avatar,
+                        'google_id' => $googleId,
+                        'avatar' => $googleAvatar,
                     ]);
                 } else {
                     // Create new user dari Google
                     $user = User::create([
-                        'name' => $googleUser->name,
-                        'email' => $googleUser->email,
-                        'google_id' => $googleUser->id,
-                        'avatar' => $googleUser->avatar,
+                        'name' => $googleName,
+                        'email' => $googleEmail,
+                        'google_id' => $googleId,
+                        'avatar' => $googleAvatar,
                         'password' => bcrypt('12345678'), // Default password
                         'email_verified_at' => now(), // Auto verified by Google
+                        'role' => 'user',
                     ]);
                 }
             }
+
+            // Ensure legacy users without role default to user
+            if (!$user->role) {
+                $user->role = 'user';
+                $user->save();
+            }
+
+            $user->ensureDefaultCategories();
             
             // Login user ke aplikasi
             Auth::login($user);
             
+            if ($user->role === 'admin') {
+                return redirect()->route('admin.dashboard')->with('success', 'Successfully logged in with Google!');
+            }
+
             return redirect('/tasks')->with('success', 'Successfully logged in with Google!');
             
         } catch (Exception $e) {

@@ -44,7 +44,7 @@
             </div>
 
             <div class="flex items-center justify-between mt-6">
-                <a href="{{ route('tasks.index') }}" class="text-sm text-gray-600">Back to Tasks</a>
+                <a href="{{ auth()->user()->role === 'admin' ? route('admin.dashboard') : route('tasks.index') }}" class="text-sm text-gray-600">Back to {{ auth()->user()->role === 'admin' ? 'Dashboard' : 'Tasks' }}</a>
                 <button type="submit" class="btn-gradient px-4 py-2 text-white rounded-lg">Save Changes</button>
             </div>
         </form>

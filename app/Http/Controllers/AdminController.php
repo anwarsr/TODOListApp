@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 /**
  * AdminController
@@ -16,40 +18,6 @@ use App\Models\User;
 class AdminController extends Controller
 {
     /**
-     * Menampilkan halaman login admin
-     * 
-     * @return \Illuminate\View\View
-     */
-    public function showLogin()
-    {
-        return view('admin.login');
-    }
-
-    /**
-     * Memproses login admin dengan kredensial hardcoded
-     * Username: admin, Password: admin
-     * 
-     * @param Request $request
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function login(Request $request)
-    {
-        $data = $request->validate([
-            'adminname' => 'required|string',
-            'password' => 'required|string',
-        ]);
-
-        // Simple hardcoded admin credentials as requested
-        if ($data['adminname'] === 'admin' && $data['password'] === 'admin') {
-            // mark session as admin
-            session(['is_admin' => true]);
-            return redirect()->route('admin.dashboard');
-        }
-
-        return back()->withErrors(['adminname' => 'Invalid admin credentials']);
-    }
-
-    /**
      * Memproses logout admin
      * 
      * @param Request $request
@@ -57,8 +25,11 @@ class AdminController extends Controller
      */
     public function logout(Request $request)
     {
-        $request->session()->forget('is_admin');
-        return redirect()->route('admin.login');
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('login');
     }
 
     /**
@@ -68,8 +39,40 @@ class AdminController extends Controller
      */
     public function dashboard()
     {
-        $users = User::paginate(15);
-        return view('admin.dashboard', compact('users'));
+        $users = User::orderBy('id')->paginate(15);
+        $adminCount = User::where('role', 'admin')->count();
+
+        return view('admin.dashboard', compact('users', 'adminCount'));
+    }
+
+    /**
+     * Form create user oleh admin.
+     */
+    public function createUser()
+    {
+        return view('admin.create_user');
+    }
+
+    /**
+     * Simpan user baru oleh admin tanpa login ke akun itu.
+     */
+    public function storeUser(Request $request)
+    {
+        $data = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|min:6|confirmed',
+            'role' => 'required|in:user,admin',
+        ]);
+
+        User::create([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => Hash::make($data['password']),
+            'role' => $data['role'],
+        ]);
+
+        return redirect()->route('admin.dashboard')->with('success', 'Account created successfully.');
     }
 
     /**
@@ -95,13 +98,16 @@ class AdminController extends Controller
         $data = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $user->id,
-            'password' => 'nullable|min:6|confirmed'
+            'password' => 'nullable|min:6|confirmed',
+            'role' => 'required|in:user,admin',
         ]);
 
         $user->name = $data['name'];
         $user->email = $data['email'];
+        $user->role = $data['role'];
+
         if (!empty($data['password'])) {
-            $user->password = bcrypt($data['password']);
+            $user->password = Hash::make($data['password']);
         }
         $user->save();
 
@@ -116,6 +122,12 @@ class AdminController extends Controller
      */
     public function deleteUser(User $user)
     {
+        $adminCount = User::where('role', 'admin')->count();
+
+        if ($user->id === Auth::id() && $user->role === 'admin' && $adminCount <= 1) {
+            return redirect()->route('admin.dashboard')->with('error', 'Cannot delete your own account because it is the only admin account left.');
+        }
+
         // Delete all user's tasks first (cascade delete)
         $user->tasks()->delete();
         
